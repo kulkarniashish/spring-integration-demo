@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:task = "http://www.springframework.org/schema/task"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:integration="http://www.springframework.org/schema/integration"
+       xmlns:beans="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
+ 
+    <context:annotation-config />
+
+ 	<task:executor id="pool" pool-size="5"/>
+
+	<integration:channel id="channel1"/>
+
+<!-- 	<integration:gateway id="printGateway" -->
+<!-- 	     service-interface="com.demo.Main.PrintGateway"> -->
+<!-- 	    <integration:method name="print" request-channel="channel1" /> -->
+<!-- 	</integration:gateway> -->
+	
+ 	<integration:channel id="channel2"/> 
+<!--     this service transform the message in input-channel and send the result to output-channel -->
+<!--     the service method to call is referenced in explicitly -->
+    <integration:service-activator input-channel="channel1" ref="printService2" method="print" output-channel="channel2">
+    </integration:service-activator>
+ 
+<!--     this channel receive the modified message -->
+   
+    <integration:service-activator input-channel="channel2" ref="printService3" method="print" />
+
+ 	<bean id="printService1" class="com.demo.service.impl.PrintService1Impl" />
+ 	
+ 	<bean id="printService2" class="com.demo.service.impl.PrintService2Impl" />
+ 	
+ 	<bean id="printService3" class="com.demo.service.impl.PrintService3Impl" />
+ 	
+</beans>
